@@ -66,7 +66,7 @@ function DeptPage() {
           <Card className="rounded-3xl border-border/60 p-6 shadow-card">
             <h3 className="text-lg font-semibold">Services offered</h3>
             <ul className="mt-4 space-y-2 text-sm">
-              {dept.services.map((s) => (
+              {dept.services.map((s: string) => (
                 <li key={s} className="flex items-center gap-2"><Icons.Check className="h-4 w-4 text-primary" /> {s}</li>
               ))}
             </ul>

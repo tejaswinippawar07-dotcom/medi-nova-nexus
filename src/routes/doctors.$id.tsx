@@ -67,14 +67,14 @@ function DoctorPage() {
 
             <h2 className="mt-10 font-display text-2xl">Weekly schedule</h2>
             <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {doc.schedule.map((s) => (
+              {doc.schedule.map((s: { day: string; slots: string[] }) => (
                 <Card key={s.day} className="rounded-2xl border-border/60 p-4">
                   <div className="text-sm font-semibold">{s.day}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {s.slots.length === 0 ? (
                       <span className="text-xs text-muted-foreground">Closed</span>
                     ) : (
-                      s.slots.map((t) => (
+                      s.slots.map((t: string) => (
                         <span key={t} className="rounded-md bg-secondary px-2 py-0.5 text-xs">{t}</span>
                       ))
                     )}
