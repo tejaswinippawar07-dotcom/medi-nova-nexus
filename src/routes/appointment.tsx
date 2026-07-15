@@ -21,8 +21,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/appointment")({
   head: () => ({
     meta: [
-      { title: "Book an appointment — MediNova Hospital" },
-      { name: "description", content: "Book a consultation with any of MediNova's 25 board-certified specialists in just a few clicks." },
+      { title: "Book an appointment — LifeCare Hospital" },
+      { name: "description", content: "Book a consultation with any of LifeCare's 25 board-certified specialists in just a few clicks." },
       { property: "og:title", content: "Book an appointment" },
       { property: "og:description", content: "Same-day appointments available." },
     ],
@@ -117,7 +117,7 @@ function BookAppointment() {
               <Label>Doctor</Label>
               <Select value={doctor} onValueChange={setDoctor}>
                 <SelectTrigger className="mt-2"><SelectValue placeholder={dept ? "Select doctor" : "Choose a department first"} /></SelectTrigger>
-                <SelectContent>{doctors.map((d) => <SelectItem key={d.id} value={d.id}>{d.name} · ${d.fee}</SelectItem>)}</SelectContent>
+                <SelectContent>{doctors.map((d) => <SelectItem key={d.id} value={d.id}>{d.name} · ₹{d.fee}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div>
@@ -155,7 +155,7 @@ function BookAppointment() {
             </div>
             <div className="sm:col-span-2 flex items-center justify-between">
               <div className="text-sm text-muted-foreground">
-                {selectedDoc && <>Consultation fee: <span className="font-semibold text-foreground">${selectedDoc.fee}</span></>}
+                {selectedDoc && <>Consultation fee: <span className="font-semibold text-foreground">₹{selectedDoc.fee}</span></>}
               </div>
               <Button type="submit" size="lg" className="rounded-full" disabled={submitting}>
                 {submitting ? "Booking…" : user ? "Confirm booking" : "Sign in to confirm"}

@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * MediNova design system. Healthcare palette with a calm teal primary
+ * LifeCare design system. Healthcare palette with a calm teal primary
  * and a warm coral accent for emergency/urgency. Tokens only —
  * never hardcode colors in components.
  */

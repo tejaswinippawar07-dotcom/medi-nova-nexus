@@ -20,9 +20,9 @@ const schema = z.object({
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact MediNova Hospital" },
+      { title: "Contact LifeCare Hospital" },
       { name: "description", content: `Reach ${HOSPITAL.name}: 24/7 emergency hotline, contact form, address, and directions.` },
-      { property: "og:title", content: "Contact MediNova" },
+      { property: "og:title", content: "Contact LifeCare" },
       { property: "og:description", content: "24/7 emergency hotline, general inquiries, directions." },
     ],
   }),
@@ -73,8 +73,8 @@ function Contact() {
             <Card className="rounded-3xl border-border/60 p-6 shadow-card">
               <span className="grid h-11 w-11 place-items-center rounded-2xl bg-emergency text-emergency-foreground"><Siren className="h-5 w-5" /></span>
               <div className="mt-4 text-xs uppercase tracking-widest text-muted-foreground">Emergency hotline</div>
-              <a href={`tel:${HOSPITAL.emergency}`} className="mt-1 block font-display text-3xl text-emergency">{HOSPITAL.emergency}</a>
-              <p className="mt-2 text-xs text-muted-foreground">24 hours · 365 days</p>
+              <a href={`tel:${HOSPITAL.emergency}`} className="mt-1 block font-display text-3xl text-emergency">{HOSPITAL.emergency} / {HOSPITAL.emergencyAlt}</a>
+              <p className="mt-2 text-xs text-muted-foreground">National Ambulance · National Emergency · 24×7</p>
             </Card>
             <Card className="rounded-3xl border-border/60 p-6 shadow-card">
               <div className="flex items-start gap-3"><Phone className="mt-1 h-4 w-4 text-primary" /><div><div className="text-xs uppercase tracking-widest text-muted-foreground">Reception</div><div className="mt-1 font-semibold">{HOSPITAL.phone}</div></div></div>

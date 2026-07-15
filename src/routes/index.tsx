@@ -124,7 +124,7 @@ function Index() {
                     <div className="mt-2 text-base font-semibold">{doc.name}</div>
                     <div className="text-xs text-muted-foreground">{doc.department} · {doc.experience} yrs</div>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm font-semibold">${doc.fee}</span>
+                      <span className="text-sm font-semibold">₹{doc.fee}</span>
                       <span className="text-xs font-medium text-primary">Book →</span>
                     </div>
                   </div>

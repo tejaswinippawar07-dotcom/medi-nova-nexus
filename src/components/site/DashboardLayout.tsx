@@ -31,7 +31,7 @@ export function DashboardLayout({ title, nav, children, requiredRole }: {
       <aside className="hidden border-r border-border/60 bg-sidebar p-6 lg:flex lg:flex-col">
         <Link to="/" className="flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-hero text-primary-foreground shadow-elegant"><Stethoscope className="h-5 w-5" /></span>
-          <div className="leading-tight"><div className="text-sm font-semibold text-sidebar-foreground">MediNova</div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">{title}</div></div>
+          <div className="leading-tight"><div className="text-sm font-semibold text-sidebar-foreground">LifeCare</div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">{title}</div></div>
         </Link>
         <nav className="mt-8 flex-1 space-y-1">
           {nav.map((n) => (

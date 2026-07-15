@@ -14,12 +14,12 @@ export const Route = createFileRoute("/departments/$slug")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.dept.name} — MediNova Hospital` },
+          { title: `${loaderData.dept.name} — LifeCare Hospital` },
           { name: "description", content: loaderData.dept.description },
-          { property: "og:title", content: `${loaderData.dept.name} at MediNova` },
+          { property: "og:title", content: `${loaderData.dept.name} at LifeCare` },
           { property: "og:description", content: loaderData.dept.tagline },
         ]
-      : [{ title: "Department — MediNova" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Department — LifeCare" }, { name: "robots", content: "noindex" }],
   }),
   component: DeptPage,
   notFoundComponent: () => (

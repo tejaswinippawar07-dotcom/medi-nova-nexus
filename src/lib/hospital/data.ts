@@ -1,11 +1,12 @@
 export const HOSPITAL = {
-  name: "MediNova Multispeciality Hospital",
+  name: "LifeCare Multispeciality Hospital",
   tagline: "Compassionate care, powered by innovation.",
   founded: 1998,
-  phone: "+1 (800) 634-6682",
-  emergency: "+1 (800) 911-MEDI",
-  email: "care@medinova.health",
-  address: "1200 Wellness Boulevard, Meridian District, San Francisco, CA 94107",
+  phone: "+91 98765 43210",
+  emergency: "108",
+  emergencyAlt: "112",
+  email: "care@lifecarehospital.in",
+  address: "LifeCare Multispeciality Hospital, Near Bus Stand, Shirpur, Dhule, Maharashtra - 425405, India",
 };
 
 export const STATS = [
@@ -69,7 +70,7 @@ export const DOCTORS: Doctor[] = Array.from({ length: 25 }, (_, i) => {
   const last = LAST_NAMES[(i * 3) % LAST_NAMES.length];
   const dept = DEPARTMENTS[i % DEPARTMENTS.length];
   const exp = 5 + (s % 26);
-  const fee = 80 + ((s % 25) * 10);
+  const fee = 500 + ((s % 20) * 100);
   const rating = 4.4 + ((s % 6) / 10);
   return {
     id: `dr-${String(i + 1).padStart(2, "0")}`,
@@ -104,13 +105,13 @@ export const SERVICES = [
 ];
 
 export const TESTIMONIALS = [
-  { name: "Amara J.", role: "Patient — Cardiology", quote: "From my first call to discharge, every person at MediNova treated me like family. My surgeon explained everything and my recovery has been remarkable." },
-  { name: "Ben R.", role: "Parent — Pediatrics", quote: "The pediatric team calmed our whole family during a stressful night. Same-day imaging, gentle nurses — we couldn't have asked for more." },
-  { name: "Priya S.", role: "Patient — Oncology", quote: "The tumor board reviewed my case within days. I've never felt more informed or supported through a diagnosis." },
+  { name: "Aarti J.", role: "Patient — Cardiology", quote: "From my first call to discharge, every person at LifeCare treated me like family. My surgeon explained everything and my recovery has been remarkable." },
+  { name: "Rahul S.", role: "Parent — Pediatrics", quote: "The pediatric team calmed our whole family during a stressful night. Same-day imaging, gentle nurses — we couldn't have asked for more." },
+  { name: "Priya D.", role: "Patient — Oncology", quote: "The tumor board reviewed my case within days. I've never felt more informed or supported through a diagnosis." },
 ];
 
 export const NEWS = [
-  { title: "MediNova opens 40-bed advanced cardiac ICU", date: "May 2026", excerpt: "State-of-the-art monitoring, hybrid OR, and telemedicine consult rooms come online." },
+  { title: "LifeCare opens 40-bed advanced cardiac ICU", date: "May 2026", excerpt: "State-of-the-art monitoring, hybrid OR, and telemedicine consult rooms come online." },
   { title: "AI-assisted radiology cuts stroke read times in half", date: "April 2026", excerpt: "Our new imaging pipeline flags large-vessel occlusions in under 90 seconds." },
   { title: "Free women's health camp — 2,300 screenings", date: "March 2026", excerpt: "Our annual community outreach reached record participation this year." },
 ];
@@ -123,7 +124,7 @@ export const VALUES = [
 ];
 
 export const TIMELINE = [
-  { year: "1998", title: "Founded", body: "Opened as a 40-bed community hospital in Meridian District." },
+  { year: "1998", title: "Founded", body: "Opened as a 40-bed community hospital in Shirpur, Dhule." },
   { year: "2006", title: "First cardiac program", body: "Launched a dedicated cardiology and cardiac surgery service." },
   { year: "2014", title: "Level I trauma", body: "Certified as a Level I trauma center with 24/7 neurosurgery." },
   { year: "2020", title: "Telemedicine at scale", body: "Delivered 200,000 virtual visits during the pandemic response." },

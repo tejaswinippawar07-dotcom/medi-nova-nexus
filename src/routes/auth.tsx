@@ -14,8 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — MediNova Hospital" },
-      { name: "description", content: "Sign in to your MediNova patient, doctor, or admin portal." },
+      { title: "Sign in — LifeCare Hospital" },
+      { name: "description", content: "Sign in to your LifeCare patient, doctor, or admin portal." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -49,7 +49,7 @@ function AuthPage() {
       });
       setLoading(false);
       if (error) { toast.error(error.message); return; }
-      if (data.session) { toast.success("Welcome to MediNova"); go(role); }
+      if (data.session) { toast.success("Welcome to LifeCare"); go(role); }
       else { toast.success("Check your email to confirm your account."); }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -67,14 +67,14 @@ function AuthPage() {
       <div className="relative hidden bg-gradient-hero p-12 text-primary-foreground lg:flex lg:flex-col lg:justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/15 backdrop-blur"><Stethoscope className="h-5 w-5" /></span>
-          <div className="leading-tight"><div className="text-sm font-semibold">MediNova</div><div className="text-[10px] uppercase tracking-widest text-white/70">Multispeciality Hospital</div></div>
+          <div className="leading-tight"><div className="text-sm font-semibold">LifeCare</div><div className="text-[10px] uppercase tracking-widest text-white/70">Multispeciality Hospital</div></div>
         </Link>
         <div>
           <div className="text-xs uppercase tracking-widest text-white/70">Your portal</div>
           <h2 className="mt-3 font-display text-5xl leading-tight">Care that follows you home.</h2>
           <p className="mt-4 max-w-md text-white/85">Book appointments, view prescriptions, download reports, and message your care team — from anywhere.</p>
         </div>
-        <div className="text-xs text-white/70">© {new Date().getFullYear()} MediNova · Accredited by NABH & JCI</div>
+        <div className="text-xs text-white/70">© {new Date().getFullYear()} LifeCare · Accredited by NABH & JCI</div>
       </div>
 
       <div className="flex items-center justify-center bg-background p-6 sm:p-12">
