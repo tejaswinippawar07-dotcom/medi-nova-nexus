@@ -7,9 +7,9 @@ import { HOSPITAL, TIMELINE, VALUES } from "@/lib/hospital/data";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About MediNova — Our story, mission, and values" },
-      { name: "description", content: "Founded in 1998, MediNova is a 640-bed multispeciality hospital with a Level I trauma center, NABH and JCI accreditation, and 38 clinical awards." },
-      { property: "og:title", content: "About MediNova Multispeciality Hospital" },
+      { title: "About LifeCare — Our story, mission, and values" },
+      { name: "description", content: "Founded in 1998, LifeCare is a 640-bed multispeciality hospital with a Level I trauma center, NABH and JCI accreditation, and 38 clinical awards." },
+      { property: "og:title", content: "About LifeCare Multispeciality Hospital" },
       { property: "og:description", content: "Our mission, vision, values, and 28 years of clinical excellence." },
     ],
   }),

@@ -7,9 +7,9 @@ import { DEPARTMENTS } from "@/lib/hospital/data";
 export const Route = createFileRoute("/departments")({
   head: () => ({
     meta: [
-      { title: "Departments — MediNova Hospital" },
+      { title: "Departments — LifeCare Hospital" },
       { name: "description", content: "Ten centers of excellence: cardiology, neurology, orthopedics, pediatrics, gynecology, oncology, dermatology, ENT, emergency, and ICU." },
-      { property: "og:title", content: "Departments at MediNova" },
+      { property: "og:title", content: "Departments at LifeCare" },
       { property: "og:description", content: "Ten centers of excellence across the full spectrum of care." },
     ],
   }),

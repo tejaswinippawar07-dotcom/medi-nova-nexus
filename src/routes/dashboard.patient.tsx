@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/hospital/auth";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/patient")({
-  head: () => ({ meta: [{ title: "Patient dashboard — MediNova" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Patient dashboard — LifeCare" }, { name: "robots", content: "noindex" }] }),
   component: PatientDash,
 });
 
@@ -48,7 +48,7 @@ function PatientDash() {
         {[
           { label: "Upcoming visits", value: appts.filter(a => a.status === "pending").length },
           { label: "Prescriptions", value: 3 },
-          { label: "Pending bills", value: "$240" },
+          { label: "Pending bills", value: "₹2,400" },
           { label: "Unread reports", value: 1 },
         ].map((s) => (
           <Card key={s.label} className="rounded-3xl border-border/60 p-6 shadow-card">

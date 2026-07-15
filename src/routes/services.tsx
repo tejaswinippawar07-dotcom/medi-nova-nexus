@@ -7,9 +7,9 @@ import { SERVICES } from "@/lib/hospital/data";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — MediNova Hospital" },
+      { title: "Services — LifeCare Hospital" },
       { name: "description", content: "Outpatient, inpatient, ICU, pharmacy, laboratory, ambulance, health packages, emergency care, and telemedicine — under one roof." },
-      { property: "og:title", content: "Services at MediNova" },
+      { property: "og:title", content: "Services at LifeCare" },
       { property: "og:description", content: "Everything a modern hospital should offer." },
     ],
   }),

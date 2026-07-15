@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { DEPARTMENTS, DOCTORS } from "@/lib/hospital/data";
 
 export const Route = createFileRoute("/dashboard/admin")({
-  head: () => ({ meta: [{ title: "Admin dashboard — MediNova" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Admin dashboard — LifeCare" }, { name: "robots", content: "noindex" }] }),
   component: AdminDash,
 });
 
@@ -43,7 +43,7 @@ function AdminDash() {
           { label: "Doctors", value: DOCTORS.length },
           { label: "Departments", value: DEPARTMENTS.length },
           { label: "Appointments", value: count ?? "—" },
-          { label: "Revenue (mo)", value: "$482K" },
+          { label: "Revenue (mo)", value: "₹4.82 Cr" },
         ].map((s) => (
           <Card key={s.label} className="rounded-3xl border-border/60 p-6 shadow-card">
             <div className="text-xs uppercase tracking-widest text-muted-foreground">{s.label}</div>

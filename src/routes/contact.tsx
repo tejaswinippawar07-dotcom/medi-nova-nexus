@@ -20,9 +20,9 @@ const schema = z.object({
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact MediNova Hospital" },
+      { title: "Contact LifeCare Hospital" },
       { name: "description", content: `Reach ${HOSPITAL.name}: 24/7 emergency hotline, contact form, address, and directions.` },
-      { property: "og:title", content: "Contact MediNova" },
+      { property: "og:title", content: "Contact LifeCare" },
       { property: "og:description", content: "24/7 emergency hotline, general inquiries, directions." },
     ],
   }),

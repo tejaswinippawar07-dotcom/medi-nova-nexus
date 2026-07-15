@@ -1,5 +1,5 @@
 export const HOSPITAL = {
-  name: "MediNova Multispeciality Hospital",
+  name: "LifeCare Multispeciality Hospital",
   tagline: "Compassionate care, powered by innovation.",
   founded: 1998,
   phone: "+1 (800) 634-6682",
@@ -104,13 +104,13 @@ export const SERVICES = [
 ];
 
 export const TESTIMONIALS = [
-  { name: "Amara J.", role: "Patient — Cardiology", quote: "From my first call to discharge, every person at MediNova treated me like family. My surgeon explained everything and my recovery has been remarkable." },
+  { name: "Amara J.", role: "Patient — Cardiology", quote: "From my first call to discharge, every person at LifeCare treated me like family. My surgeon explained everything and my recovery has been remarkable." },
   { name: "Ben R.", role: "Parent — Pediatrics", quote: "The pediatric team calmed our whole family during a stressful night. Same-day imaging, gentle nurses — we couldn't have asked for more." },
   { name: "Priya S.", role: "Patient — Oncology", quote: "The tumor board reviewed my case within days. I've never felt more informed or supported through a diagnosis." },
 ];
 
 export const NEWS = [
-  { title: "MediNova opens 40-bed advanced cardiac ICU", date: "May 2026", excerpt: "State-of-the-art monitoring, hybrid OR, and telemedicine consult rooms come online." },
+  { title: "LifeCare opens 40-bed advanced cardiac ICU", date: "May 2026", excerpt: "State-of-the-art monitoring, hybrid OR, and telemedicine consult rooms come online." },
   { title: "AI-assisted radiology cuts stroke read times in half", date: "April 2026", excerpt: "Our new imaging pipeline flags large-vessel occlusions in under 90 seconds." },
   { title: "Free women's health camp — 2,300 screenings", date: "March 2026", excerpt: "Our annual community outreach reached record participation this year." },
 ];

@@ -14,12 +14,12 @@ export const Route = createFileRoute("/doctors/$id")({
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.doc.name} — ${loaderData.doc.department} · MediNova` },
+          { title: `${loaderData.doc.name} — ${loaderData.doc.department} · LifeCare` },
           { name: "description", content: loaderData.doc.bio.slice(0, 155) },
-          { property: "og:title", content: `${loaderData.doc.name} — MediNova` },
+          { property: "og:title", content: `${loaderData.doc.name} — LifeCare` },
           { property: "og:description", content: `${loaderData.doc.department} · ${loaderData.doc.experience} years experience` },
         ]
-      : [{ title: "Doctor — MediNova" }, { name: "robots", content: "noindex" }],
+      : [{ title: "Doctor — LifeCare" }, { name: "robots", content: "noindex" }],
   }),
   component: DoctorPage,
   notFoundComponent: () => (
@@ -47,7 +47,7 @@ function DoctorPage() {
             </div>
             <Card className="mt-5 rounded-3xl border-border/60 p-5 shadow-card">
               <div className="text-xs uppercase tracking-widest text-muted-foreground">Consultation fee</div>
-              <div className="mt-2 font-display text-4xl">${doc.fee}</div>
+              <div className="mt-2 font-display text-4xl">₹{doc.fee}</div>
               <Link to="/appointment">
                 <Button className="mt-4 w-full rounded-full">Book appointment</Button>
               </Link>

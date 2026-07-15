@@ -12,7 +12,7 @@ export function Footer() {
               <Stethoscope className="h-5 w-5" />
             </span>
             <div className="leading-tight">
-              <div className="text-sm font-semibold">MediNova</div>
+              <div className="text-sm font-semibold">LifeCare</div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Multispeciality Hospital</div>
             </div>
           </div>
@@ -56,7 +56,7 @@ export function Footer() {
       </div>
       <div className="border-t border-border/60">
         <div className="mx-auto flex max-w-7xl flex-col justify-between gap-2 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6 lg:px-8">
-          <span>© {new Date().getFullYear()} MediNova Multispeciality Hospital. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} LifeCare Multispeciality Hospital. All rights reserved.</span>
           <span>Accredited by NABH · JCI · ISO 9001:2015</span>
         </div>
       </div>

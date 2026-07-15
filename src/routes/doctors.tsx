@@ -10,9 +10,9 @@ import { DEPARTMENTS, DOCTORS } from "@/lib/hospital/data";
 export const Route = createFileRoute("/doctors")({
   head: () => ({
     meta: [
-      { title: "Find a doctor — MediNova Hospital" },
-      { name: "description", content: "Browse 25 board-certified specialists at MediNova. Filter by department, search by name, and book online in minutes." },
-      { property: "og:title", content: "Meet the doctors of MediNova" },
+      { title: "Find a doctor — LifeCare Hospital" },
+      { name: "description", content: "Browse 25 board-certified specialists at LifeCare. Filter by department, search by name, and book online in minutes." },
+      { property: "og:title", content: "Meet the doctors of LifeCare" },
       { property: "og:description", content: "25 board-certified specialists across 10 departments." },
     ],
   }),
@@ -71,7 +71,7 @@ function DoctorsPage() {
                   <div className="mt-2 text-base font-semibold">{doc.name}</div>
                   <div className="text-xs text-muted-foreground">{doc.department} · {doc.experience} yrs</div>
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="text-sm font-semibold">${doc.fee}</span>
+                    <span className="text-sm font-semibold">₹{doc.fee}</span>
                     <span className="text-xs font-medium text-primary">Book →</span>
                   </div>
                 </div>

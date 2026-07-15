@@ -27,7 +27,7 @@ export function Header() {
             <Stethoscope className="h-5 w-5" />
           </span>
           <div className="hidden flex-col leading-tight sm:flex">
-            <span className="text-sm font-semibold">MediNova</span>
+            <span className="text-sm font-semibold">LifeCare</span>
             <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Multispeciality Hospital</span>
           </div>
         </Link>

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/doctor")({
-  head: () => ({ meta: [{ title: "Doctor dashboard — MediNova" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Doctor dashboard — LifeCare" }, { name: "robots", content: "noindex" }] }),
   component: DoctorDash,
 });
 
