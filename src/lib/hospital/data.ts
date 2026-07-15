@@ -3,7 +3,8 @@ export const HOSPITAL = {
   tagline: "Compassionate care, powered by innovation.",
   founded: 1998,
   phone: "+91 98765 43210",
-  emergency: "108 / 112",
+  emergency: "108",
+  emergencyAlt: "112",
   email: "care@lifecarehospital.in",
   address: "LifeCare Multispeciality Hospital, Near Bus Stand, Shirpur, Dhule, Maharashtra - 425405, India",
 };
