@@ -11,7 +11,7 @@ export function EmergencyBanner() {
           <span className="sm:hidden">24/7 Emergency</span>
         </div>
         <a href={`tel:${HOSPITAL.emergency}`} className="flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 font-semibold backdrop-blur transition hover:bg-white/25">
-          <Phone className="h-3.5 w-3.5" /> {HOSPITAL.emergency}
+          <Phone className="h-3.5 w-3.5" /> {HOSPITAL.emergency} / {HOSPITAL.emergencyAlt}
         </a>
       </div>
     </div>
