@@ -2,10 +2,10 @@ export const HOSPITAL = {
   name: "LifeCare Multispeciality Hospital",
   tagline: "Compassionate care, powered by innovation.",
   founded: 1998,
-  phone: "+1 (800) 634-6682",
-  emergency: "+1 (800) 911-MEDI",
-  email: "care@medinova.health",
-  address: "1200 Wellness Boulevard, Meridian District, San Francisco, CA 94107",
+  phone: "+91 98765 43210",
+  emergency: "108 / 112",
+  email: "care@lifecarehospital.in",
+  address: "LifeCare Multispeciality Hospital, Near Bus Stand, Shirpur, Dhule, Maharashtra - 425405, India",
 };
 
 export const STATS = [
