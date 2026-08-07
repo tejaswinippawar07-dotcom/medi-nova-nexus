@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Ambulance, BedDouble, Building2, IndianRupee, Home, Mail, Pill, ShieldCheck, Stethoscope, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/site/DashboardLayout";
-import { CrudManager, StatusCell } from "@/components/hms/CrudManager";
+import { CrudManager } from "@/components/hms/CrudManager";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -163,5 +163,3 @@ function AdminDash() {
     </DashboardLayout>
   );
 }
-
-export { StatusCell };
