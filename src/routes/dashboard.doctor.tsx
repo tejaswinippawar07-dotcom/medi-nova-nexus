@@ -22,7 +22,7 @@ function DoctorDash() {
   return (
     <DashboardLayout
       title="Doctor portal"
-      requiredRole="doctor"
+      allowedRoles={["doctor"]}
       nav={[
         { to: "/dashboard/doctor", label: "Overview", icon: <Home className="h-4 w-4" /> },
         { to: "/dashboard/doctor", label: "Schedule", icon: <Calendar className="h-4 w-4" /> },

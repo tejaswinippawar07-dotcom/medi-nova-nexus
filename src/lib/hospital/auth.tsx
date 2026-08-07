@@ -2,7 +2,15 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
-type Role = "admin" | "doctor" | "patient";
+export type Role = "admin" | "doctor" | "patient" | "receptionist";
+
+export const roleHome: Record<Role, string> = {
+  admin: "/dashboard/admin",
+  doctor: "/dashboard/doctor",
+  receptionist: "/dashboard/receptionist",
+  patient: "/dashboard/patient",
+};
+
 type Ctx = { user: User | null; session: Session | null; role: Role | null; loading: boolean; signOut: () => Promise<void> };
 const AuthCtx = createContext<Ctx>({ user: null, session: null, role: null, loading: true, signOut: async () => {} });
 

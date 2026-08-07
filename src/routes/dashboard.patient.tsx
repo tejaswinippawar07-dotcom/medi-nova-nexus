@@ -31,7 +31,7 @@ function PatientDash() {
   return (
     <DashboardLayout
       title="Patient portal"
-      requiredRole="patient"
+      allowedRoles={["patient"]}
       nav={[
         { to: "/dashboard/patient", label: "Overview", icon: <Home className="h-4 w-4" /> },
         { to: "/appointment", label: "Book appointment", icon: <Calendar className="h-4 w-4" /> },
