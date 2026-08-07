@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { roleHome, type Role } from "@/lib/hospital/auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -31,10 +32,10 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState<"patient" | "doctor" | "admin">("patient");
+  const [role, setRole] = useState<Role>("patient");
   const [loading, setLoading] = useState(false);
 
-  const go = (r: string) => navigate({ to: r === "admin" ? "/dashboard/admin" : r === "doctor" ? "/dashboard/doctor" : "/dashboard/patient" });
+  const go = (r: string) => navigate({ to: roleHome[(r as Role)] ?? "/dashboard/patient" });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,11 +100,12 @@ function AuthPage() {
               <form onSubmit={submit} className="space-y-4">
                 <div><Label>Full name</Label><Input className="mt-2" value={name} onChange={(e) => setName(e.target.value)} /></div>
                 <div><Label>I am a</Label>
-                  <Select value={role} onValueChange={(v) => setRole(v as "patient" | "doctor" | "admin")}>
+                  <Select value={role} onValueChange={(v) => setRole(v as Role)}>
                     <SelectTrigger className="mt-2"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="patient">Patient</SelectItem>
                       <SelectItem value="doctor">Doctor</SelectItem>
+                      <SelectItem value="receptionist">Receptionist</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
