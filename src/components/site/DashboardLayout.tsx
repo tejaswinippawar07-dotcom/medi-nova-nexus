@@ -2,13 +2,13 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { LogOut, Moon, Stethoscope, Sun } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
-import { useAuth } from "@/lib/hospital/auth";
+import { roleHome, useAuth, type Role } from "@/lib/hospital/auth";
 import { useTheme } from "@/lib/hospital/theme";
 import { Button } from "@/components/ui/button";
 
-export function DashboardLayout({ title, nav, children, requiredRole }: {
+export function DashboardLayout({ title, nav, children, allowedRoles }: {
   title: string;
-  requiredRole: "admin" | "doctor" | "patient";
+  allowedRoles: Role[];
   nav: { to: string; label: string; icon: ReactNode }[];
   children: ReactNode;
 }) {
@@ -19,8 +19,8 @@ export function DashboardLayout({ title, nav, children, requiredRole }: {
   useEffect(() => {
     if (loading) return;
     if (!user) navigate({ to: "/auth" });
-    else if (role && role !== requiredRole) navigate({ to: role === "admin" ? "/dashboard/admin" : role === "doctor" ? "/dashboard/doctor" : "/dashboard/patient" });
-  }, [loading, user, role, requiredRole, navigate]);
+    else if (role && !allowedRoles.includes(role)) navigate({ to: roleHome[role] });
+  }, [loading, user, role, allowedRoles, navigate]);
 
   if (loading || !user) {
     return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
