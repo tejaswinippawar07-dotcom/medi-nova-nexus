@@ -22,6 +22,7 @@ import { Route as DoctorsIdRouteImport } from './routes/doctors.$id'
 import { Route as DepartmentsSlugRouteImport } from './routes/departments.$slug'
 import { Route as DashboardPatientRouteImport } from './routes/dashboard.patient'
 import { Route as DashboardDoctorRouteImport } from './routes/dashboard.doctor'
+import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -88,6 +89,11 @@ const DashboardDoctorRoute = DashboardDoctorRouteImport.update({
   path: '/dashboard/doctor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardAdminRoute = DashboardAdminRouteImport.update({
+  id: '/dashboard/admin',
+  path: '/dashboard/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/doctors': typeof DoctorsRouteWithChildren
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/doctor': typeof DashboardDoctorRoute
   '/dashboard/patient': typeof DashboardPatientRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/doctors': typeof DoctorsRouteWithChildren
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/doctor': typeof DashboardDoctorRoute
   '/dashboard/patient': typeof DashboardPatientRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
@@ -130,6 +138,7 @@ export interface FileRoutesById {
   '/doctors': typeof DoctorsRouteWithChildren
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/dashboard/admin': typeof DashboardAdminRoute
   '/dashboard/doctor': typeof DashboardDoctorRoute
   '/dashboard/patient': typeof DashboardPatientRoute
   '/departments/$slug': typeof DepartmentsSlugRoute
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/services'
     | '/sitemap.xml'
+    | '/dashboard/admin'
     | '/dashboard/doctor'
     | '/dashboard/patient'
     | '/departments/$slug'
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/services'
     | '/sitemap.xml'
+    | '/dashboard/admin'
     | '/dashboard/doctor'
     | '/dashboard/patient'
     | '/departments/$slug'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/doctors'
     | '/services'
     | '/sitemap.xml'
+    | '/dashboard/admin'
     | '/dashboard/doctor'
     | '/dashboard/patient'
     | '/departments/$slug'
@@ -193,6 +205,7 @@ export interface RootRouteChildren {
   DoctorsRoute: typeof DoctorsRouteWithChildren
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  DashboardAdminRoute: typeof DashboardAdminRoute
   DashboardDoctorRoute: typeof DashboardDoctorRoute
   DashboardPatientRoute: typeof DashboardPatientRoute
 }
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDoctorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/admin': {
+      id: '/dashboard/admin'
+      path: '/dashboard/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof DashboardAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -326,19 +346,10 @@ const rootRouteChildren: RootRouteChildren = {
   DoctorsRoute: DoctorsRouteWithChildren,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  DashboardAdminRoute: DashboardAdminRoute,
   DashboardDoctorRoute: DashboardDoctorRoute,
   DashboardPatientRoute: DashboardPatientRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
