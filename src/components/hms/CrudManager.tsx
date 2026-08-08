@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, RefreshCw, FileSpreadsheet, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { exportCsv, exportPdf } from "@/lib/hospital/export";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,12 @@ type Props = {
   canEdit?: boolean;
   canDelete?: boolean;
   emptyLabel?: string;
+  /** Client-side row filter, e.g. { doctor_id: "…" }. Also limits exports. */
+  filter?: Record<string, unknown>;
+  /** Values merged into every new record (and hidden from the form). */
+  defaults?: Row;
+  /** Show the CSV / PDF export buttons. */
+  exportable?: boolean;
 };
 
 // The generated Supabase types are per-table literals; this manager is table-generic
@@ -72,6 +79,7 @@ function display(value: unknown): string {
 export function CrudManager({
   table, title, description, fields, select = "*", orderBy = { column: "created_at", ascending: false },
   searchKeys = [], canCreate = true, canEdit = true, canDelete = true, emptyLabel = "No records yet.",
+  filter, defaults, exportable = true,
 }: Props) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,12 +103,22 @@ export function CrudManager({
   const editableFields = useMemo(() => fields.filter((f) => !f.readOnly), [fields]);
   const tableFields = useMemo(() => fields.filter((f) => !f.hideInTable), [fields]);
 
+  const filterKey = JSON.stringify(filter ?? {});
   const filtered = useMemo(() => {
+    const active = JSON.parse(filterKey) as Record<string, unknown>;
+    let out = rows.filter((r) => Object.entries(active).every(([k, v]) => String(r[k] ?? "") === String(v ?? "")));
     const q = query.trim().toLowerCase();
-    if (!q) return rows;
-    const keys = searchKeys.length ? searchKeys : tableFields.map((f) => f.key);
-    return rows.filter((r) => keys.some((k) => String(r[k] ?? "").toLowerCase().includes(q)));
-  }, [rows, query, searchKeys, tableFields]);
+    if (q) {
+      const keys = searchKeys.length ? searchKeys : tableFields.map((f) => f.key);
+      out = out.filter((r) => keys.some((k) => String(r[k] ?? "").toLowerCase().includes(q)));
+    }
+    return out;
+  }, [rows, query, searchKeys, tableFields, filterKey]);
+
+  const exportColumns = useMemo(
+    () => tableFields.map((f) => ({ key: f.key, label: f.label })),
+    [tableFields],
+  );
 
   const openCreate = () => {
     setEditing(null);
@@ -127,7 +145,7 @@ export function CrudManager({
     setSaving(true);
     const { error } = editing
       ? await db.from(table).update(payload).eq("id", editing["id"])
-      : await db.from(table).insert(payload);
+      : await db.from(table).insert({ ...(defaults ?? {}), ...payload });
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editing ? "Record updated." : "Record created.");
@@ -159,6 +177,16 @@ export function CrudManager({
           <Button variant="ghost" size="icon" aria-label="Refresh" onClick={() => void load()}>
             <RefreshCw className="h-4 w-4" />
           </Button>
+          {exportable && (
+            <>
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => exportCsv(table, exportColumns, filtered)}>
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> Excel
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => { if (!exportPdf(title, exportColumns, filtered)) toast.error("Allow pop-ups to export the PDF."); }}>
+                <Printer className="mr-1 h-4 w-4" /> PDF
+              </Button>
+            </>
+          )}
           {canCreate && (
             <Button size="sm" className="rounded-full" onClick={openCreate}>
               <Plus className="mr-1 h-4 w-4" /> New
