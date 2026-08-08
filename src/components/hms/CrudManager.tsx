@@ -144,7 +144,7 @@ export function CrudManager({
     setSaving(true);
     const { error } = editing
       ? await db.from(table).update(payload).eq("id", editing["id"])
-      : await db.from(table).insert(payload);
+      : await db.from(table).insert({ ...(defaults ?? {}), ...payload });
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(editing ? "Record updated." : "Record created.");
