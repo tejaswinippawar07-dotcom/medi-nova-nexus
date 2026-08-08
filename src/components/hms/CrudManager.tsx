@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Search, RefreshCw } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, RefreshCw, FileSpreadsheet, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,12 @@ type Props = {
   canEdit?: boolean;
   canDelete?: boolean;
   emptyLabel?: string;
+  /** Client-side row filter, e.g. { doctor_id: "…" }. Also limits exports. */
+  filter?: Record<string, unknown>;
+  /** Values merged into every new record (and hidden from the form). */
+  defaults?: Row;
+  /** Show the CSV / PDF export buttons. */
+  exportable?: boolean;
 };
 
 // The generated Supabase types are per-table literals; this manager is table-generic
