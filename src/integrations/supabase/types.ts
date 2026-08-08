@@ -766,6 +766,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      pay_bill: {
+        Args: { _bill_id: string; _method: string }
+        Returns: undefined
+      }
       staff_user_ids: { Args: never; Returns: string[] }
     }
     Enums: {
