@@ -756,6 +756,17 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      notify_users: {
+        Args: {
+          _link: string
+          _message: string
+          _title: string
+          _type: string
+          _user_ids: string[]
+        }
+        Returns: undefined
+      }
+      staff_user_ids: { Args: never; Returns: string[] }
     }
     Enums: {
       app_role: "admin" | "doctor" | "patient" | "receptionist"
