@@ -7,9 +7,10 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { labelFor, useLookup } from "@/lib/hospital/lookups";
+import { AppointmentQueue } from "@/components/hms/AppointmentQueue";
 import {
   admissionFields, ambulanceFields, appointmentFields, auditFields, billingFields,
-  contactFields, departmentFields, doctorFields, medicineFields, patientFields, staffFields,
+  contactFields, departmentFields, doctorFields, inr, medicineFields, patientFields, reportFields, staffFields,
 } from "@/lib/hospital/fields";
 
 export const Route = createFileRoute("/dashboard/admin")({
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/dashboard/admin")({
 const TABS = [
   ["overview", "Overview"], ["patients", "Patients"], ["doctors", "Doctors"], ["departments", "Departments"],
   ["staff", "Staff"], ["appointments", "Appointments"], ["admissions", "Admissions"], ["prescriptions", "Prescriptions"],
-  ["pharmacy", "Pharmacy"], ["billing", "Billing"], ["ambulance", "Ambulance"], ["enquiries", "Enquiries"], ["audit", "Audit log"],
+  ["pharmacy", "Pharmacy"], ["billing", "Billing"], ["reports", "Reports"], ["ambulance", "Ambulance"], ["enquiries", "Enquiries"], ["audit", "Audit log"],
 ] as const;
 
 function useCounts() {
@@ -43,8 +44,29 @@ function useCounts() {
   return counts;
 }
 
+function useRevenue() {
+  const [state, setState] = useState({ revenue: 0, today: 0, pending: 0 });
+  useEffect(() => {
+    const iso = new Date().toISOString().slice(0, 10);
+    void supabase.from("billing").select("total_amount, payment_status").then(({ data }) => {
+      const revenue = (data ?? []).filter((b) => b.payment_status === "paid").reduce((s, b) => s + Number(b.total_amount ?? 0), 0);
+      setState((p) => ({ ...p, revenue }));
+    });
+    void supabase.from("appointments").select("appointment_date, status").then(({ data }) => {
+      const rows = data ?? [];
+      setState((p) => ({
+        ...p,
+        today: rows.filter((r) => r.appointment_date === iso).length,
+        pending: rows.filter((r) => r.status === "pending").length,
+      }));
+    });
+  }, []);
+  return state;
+}
+
 function AdminDash() {
   const counts = useCounts();
+  const money = useRevenue();
   const departments = useLookup("departments", "department_name");
   const doctors = useLookup("doctors", "name");
   const patients = useLookup("patients", "full_name");
@@ -85,11 +107,28 @@ function AdminDash() {
                 <div className="mt-3 font-display text-4xl">{s.value ?? "—"}</div>
               </Card>
             ))}
+            {[
+              { label: "Total revenue", value: inr(money.revenue) },
+              { label: "Appointments today", value: String(money.today) },
+              { label: "Pending approvals", value: String(money.pending) },
+              { label: "Departments", value: String(departments.length) },
+            ].map((s) => (
+              <Card key={s.label} className="rounded-3xl border-border/60 bg-accent/30 p-6 shadow-card">
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">{s.label}</div>
+                <div className="mt-3 font-display text-4xl">{s.value}</div>
+              </Card>
+            ))}
           </div>
-          <div className="mt-6">
+          <div className="mt-6 space-y-6">
+            <AppointmentQueue title="Pending approvals" description="Approve, reject or reschedule requests from patients."
+              statuses={["pending"]} actions={["approve", "reject", "reschedule"]}
+              patientLabels={Object.fromEntries(patients.map((p) => [p.value, p.label]))} />
             <CrudManager table="appointments" title="Latest appointments" description="Most recent bookings across all departments."
               orderBy={{ column: "created_at", ascending: false }} canCreate={false}
               fields={appointmentFields(doctors, departments, patients)} searchKeys={["doctor_name", "department", "status"]} />
+            <CrudManager table="audit_logs" title="Recent activity" description="The latest changes across the hospital."
+              canCreate={false} canEdit={false} canDelete={false} fields={auditFields} searchKeys={["action", "table_name"]}
+              emptyLabel="No activity recorded yet." />
           </div>
         </TabsContent>
 
@@ -143,6 +182,16 @@ function AdminDash() {
         </TabsContent>
 
         <TabsContent value="ambulance" className="mt-6">
+          <CrudManager table="ambulance" title="Ambulance fleet" orderBy={{ column: "vehicle_number", ascending: true }}
+            fields={ambulanceFields} searchKeys={["vehicle_number", "driver_name", "status"]} />
+        </TabsContent>
+
+        <TabsContent value="reports" className="mt-6">
+          <CrudManager table="reports" title="Patient reports" description="Lab, radiology and discharge reports; patients are notified when added."
+            fields={reportFields(patients, doctors)} searchKeys={["title", "report_type", "status"]} />
+        </TabsContent>
+
+        <TabsContent value="ambulance-legacy" className="mt-6">
           <CrudManager table="ambulance" title="Ambulance fleet" orderBy={{ column: "vehicle_number", ascending: true }}
             fields={ambulanceFields} searchKeys={["vehicle_number", "driver_name", "status"]} />
         </TabsContent>
