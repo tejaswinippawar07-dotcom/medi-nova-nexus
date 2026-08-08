@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { roleHome, useAuth, type Role } from "@/lib/hospital/auth";
 import { useTheme } from "@/lib/hospital/theme";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/hms/NotificationBell";
 
 export function DashboardLayout({ title, nav, children, allowedRoles }: {
   title: string;
@@ -47,9 +48,12 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
       <div className="flex flex-col">
         <header className="flex h-16 items-center justify-between border-b border-border/60 bg-background/75 px-6 backdrop-blur">
           <div className="text-sm text-muted-foreground">Signed in as <span className="font-medium text-foreground">{user.email}</span></div>
-          <button onClick={toggle} aria-label="Toggle theme" className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:bg-accent">
-            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </button>
+          <div className="flex items-center gap-1">
+            <NotificationBell />
+            <button onClick={toggle} aria-label="Toggle theme" className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:bg-accent">
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+          </div>
         </header>
         <main className="flex-1 p-6 lg:p-10">{children}</main>
       </div>
