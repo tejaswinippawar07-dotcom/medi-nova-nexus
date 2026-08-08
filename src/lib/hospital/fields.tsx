@@ -146,10 +146,3 @@ export const prescriptionFields = (patients: Option[], doctors: Option[]): Field
   { key: "notes", label: "Advice", type: "textarea" },
   { key: "created_at", label: "Issued", readOnly: true, render: (r) => formatDate(r["created_at"]) },
 ];
-
-const legacyAuditFields: Field[] = [
-  { key: "created_at", label: "When", readOnly: true, render: (r) => formatDate(r["created_at"]) },
-  { key: "action", label: "Action", readOnly: true },
-  { key: "table_name", label: "Record type", readOnly: true },
-  { key: "record_id", label: "Record id", readOnly: true },
-];
