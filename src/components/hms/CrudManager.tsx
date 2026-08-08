@@ -78,6 +78,7 @@ function display(value: unknown): string {
 export function CrudManager({
   table, title, description, fields, select = "*", orderBy = { column: "created_at", ascending: false },
   searchKeys = [], canCreate = true, canEdit = true, canDelete = true, emptyLabel = "No records yet.",
+  filter, defaults, exportable = true,
 }: Props) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
@@ -101,12 +102,22 @@ export function CrudManager({
   const editableFields = useMemo(() => fields.filter((f) => !f.readOnly), [fields]);
   const tableFields = useMemo(() => fields.filter((f) => !f.hideInTable), [fields]);
 
+  const filterKey = JSON.stringify(filter ?? {});
   const filtered = useMemo(() => {
+    const active = JSON.parse(filterKey) as Record<string, unknown>;
+    let out = rows.filter((r) => Object.entries(active).every(([k, v]) => String(r[k] ?? "") === String(v ?? "")));
     const q = query.trim().toLowerCase();
-    if (!q) return rows;
-    const keys = searchKeys.length ? searchKeys : tableFields.map((f) => f.key);
-    return rows.filter((r) => keys.some((k) => String(r[k] ?? "").toLowerCase().includes(q)));
-  }, [rows, query, searchKeys, tableFields]);
+    if (q) {
+      const keys = searchKeys.length ? searchKeys : tableFields.map((f) => f.key);
+      out = out.filter((r) => keys.some((k) => String(r[k] ?? "").toLowerCase().includes(q)));
+    }
+    return out;
+  }, [rows, query, searchKeys, tableFields, filterKey]);
+
+  const exportColumns = useMemo(
+    () => tableFields.map((f) => ({ key: f.key, label: f.label })),
+    [tableFields],
+  );
 
   const openCreate = () => {
     setEditing(null);
