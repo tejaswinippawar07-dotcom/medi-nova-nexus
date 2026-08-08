@@ -259,7 +259,13 @@ function PatientProfile({ patient, onSaved }: { patient: PatientRow | null; onSa
   const save = async () => {
     if (!user) return;
     if (!form["full_name"]?.trim() || !form["mobile"]?.trim()) { toast.error("Name and mobile are required."); return; }
-    const payload = { ...form, date_of_birth: form["date_of_birth"] || null, user_id: user.id };
+    const payload = {
+      ...form,
+      full_name: form["full_name"]!.trim(),
+      mobile: form["mobile"]!.trim(),
+      date_of_birth: form["date_of_birth"] || null,
+      user_id: user.id,
+    };
     setSaving(true);
     const res = patient
       ? await supabase.from("patients").update(payload).eq("id", patient.id).select("*").maybeSingle()
