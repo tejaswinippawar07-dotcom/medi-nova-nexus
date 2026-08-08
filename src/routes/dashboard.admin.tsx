@@ -191,11 +191,6 @@ function AdminDash() {
             fields={reportFields(patients, doctors)} searchKeys={["title", "report_type", "status"]} />
         </TabsContent>
 
-        <TabsContent value="ambulance-legacy" className="mt-6">
-          <CrudManager table="ambulance" title="Ambulance fleet" orderBy={{ column: "vehicle_number", ascending: true }}
-            fields={ambulanceFields} searchKeys={["vehicle_number", "driver_name", "status"]} />
-        </TabsContent>
-
         <TabsContent value="enquiries" className="mt-6">
           <CrudManager table="contacts" title="Website enquiries" description="Messages submitted from the public contact form."
             canCreate={false} fields={contactFields} searchKeys={["name", "email", "subject"]} />
