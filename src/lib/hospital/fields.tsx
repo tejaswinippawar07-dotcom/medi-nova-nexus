@@ -128,3 +128,28 @@ export const auditFields: Field[] = [
   { key: "table_name", label: "Record type", readOnly: true },
   { key: "record_id", label: "Record id", readOnly: true },
 ];
+
+export const reportFields = (patients: Option[], doctors: Option[]): Field[] => [
+  { key: "title", label: "Report title", required: true, placeholder: "Lipid profile" },
+  { key: "patient_id", label: "Patient", type: "select", options: patients, required: true, render: (r) => labelFor(patients, r["patient_id"]) },
+  { key: "doctor_id", label: "Doctor", type: "select", options: doctors, render: (r) => labelFor(doctors, r["doctor_id"]) },
+  { key: "report_type", label: "Type", type: "select", options: opts("laboratory", "radiology", "pathology", "discharge summary") },
+  { key: "status", label: "Status", type: "select", options: opts("pending", "ready"), render: (r) => <StatusCell value={r["status"]} /> },
+  { key: "file_url", label: "File link", placeholder: "https://…", hideInTable: true },
+  { key: "notes", label: "Findings", type: "textarea", hideInTable: true },
+  { key: "created_at", label: "Uploaded", readOnly: true, render: (r) => formatDate(r["created_at"]) },
+];
+
+export const prescriptionFields = (patients: Option[], doctors: Option[]): Field[] => [
+  { key: "patient_id", label: "Patient", type: "select", options: patients, required: true, render: (r) => labelFor(patients, r["patient_id"]) },
+  { key: "doctor_id", label: "Doctor", type: "select", options: doctors, render: (r) => labelFor(doctors, r["doctor_id"]) },
+  { key: "notes", label: "Advice", type: "textarea" },
+  { key: "created_at", label: "Issued", readOnly: true, render: (r) => formatDate(r["created_at"]) },
+];
+
+const legacyAuditFields: Field[] = [
+  { key: "created_at", label: "When", readOnly: true, render: (r) => formatDate(r["created_at"]) },
+  { key: "action", label: "Action", readOnly: true },
+  { key: "table_name", label: "Record type", readOnly: true },
+  { key: "record_id", label: "Record id", readOnly: true },
+];
