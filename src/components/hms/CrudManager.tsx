@@ -176,6 +176,16 @@ export function CrudManager({
           <Button variant="ghost" size="icon" aria-label="Refresh" onClick={() => void load()}>
             <RefreshCw className="h-4 w-4" />
           </Button>
+          {exportable && (
+            <>
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => exportCsv(table, exportColumns, filtered)}>
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> Excel
+              </Button>
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => { if (!exportPdf(title, exportColumns, filtered)) toast.error("Allow pop-ups to export the PDF."); }}>
+                <Printer className="mr-1 h-4 w-4" /> PDF
+              </Button>
+            </>
+          )}
           {canCreate && (
             <Button size="sm" className="rounded-full" onClick={openCreate}>
               <Plus className="mr-1 h-4 w-4" /> New
