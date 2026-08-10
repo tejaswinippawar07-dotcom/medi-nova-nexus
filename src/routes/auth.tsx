@@ -8,9 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { roleHome, type Role } from "@/lib/hospital/auth";
+import { fetchRole, roleHome, type Role } from "@/lib/hospital/auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -32,10 +31,9 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState<Role>("patient");
   const [loading, setLoading] = useState(false);
 
-  const go = (r: string) => navigate({ to: roleHome[(r as Role)] ?? "/dashboard/patient" });
+  const go = (r: Role) => navigate({ to: roleHome[r] });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,20 +44,21 @@ function AuthPage() {
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
         email, password,
-        options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name, role } },
+        options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: name } },
       });
       setLoading(false);
       if (error) { toast.error(error.message); return; }
-      if (data.session) { toast.success("Welcome to LifeCare"); go(role); }
+      if (data.session) { toast.success("Welcome to LifeCare"); go("patient"); }
       else { toast.success("Check your email to confirm your account."); }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setLoading(false);
-      if (error) { toast.error(error.message); return; }
+      if (error) { setLoading(false); toast.error(error.message); return; }
       const { data: u } = await supabase.auth.getUser();
-      const { data: r } = await supabase.from("user_roles").select("role").eq("user_id", u.user!.id).limit(1).maybeSingle();
+      const resolved = u.user ? await fetchRole(u.user.id) : null;
+      setLoading(false);
+      if (!resolved) { toast.error("Signed in, but your role could not be loaded. Please contact an administrator."); return; }
       toast.success("Welcome back");
-      go(r?.role ?? "patient");
+      go(resolved);
     }
   };
 
@@ -99,17 +98,9 @@ function AuthPage() {
             <TabsContent value="signup" className="mt-5">
               <form onSubmit={submit} className="space-y-4">
                 <div><Label>Full name</Label><Input className="mt-2" value={name} onChange={(e) => setName(e.target.value)} /></div>
-                <div><Label>I am a</Label>
-                  <Select value={role} onValueChange={(v) => setRole(v as Role)}>
-                    <SelectTrigger className="mt-2"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="patient">Patient</SelectItem>
-                      <SelectItem value="doctor">Doctor</SelectItem>
-                      <SelectItem value="receptionist">Receptionist</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <p className="rounded-xl bg-muted/60 p-3 text-xs text-muted-foreground">
+                  New accounts are created as patient accounts. Staff access (doctor, reception, admin) is granted by an administrator.
+                </p>
                 <div><Label>Email</Label><Input className="mt-2" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
                 <div><Label>Password</Label><Input className="mt-2" type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
                 <Button type="submit" className="w-full rounded-full" disabled={loading}>{loading ? "Creating…" : "Create account"}</Button>
