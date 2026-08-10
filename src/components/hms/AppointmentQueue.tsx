@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Check, X, CalendarClock, CheckCircle2, RefreshCw } from "lucide-react";
+import { Check, X, CalendarClock, CheckCircle2, RefreshCw, Eye, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,11 @@ export type Appointment = {
   reason: string | null;
   status: string;
   patient_record_id: string | null;
+  created_at?: string | null;
+  patients?: {
+    full_name: string; email: string | null; mobile: string | null;
+    gender: string | null; date_of_birth: string | null; uhid: string | null;
+  } | null;
 };
 
 type Props = {
@@ -34,12 +39,19 @@ type Props = {
   /** Only today's date. */
   todayOnly?: boolean;
   /** Which workflow buttons to show. */
-  actions?: ("approve" | "reject" | "complete" | "cancel" | "reschedule")[];
+  actions?: ("approve" | "reject" | "complete" | "cancel" | "reschedule" | "delete")[];
   patientLabels?: Record<string, string>;
 };
 
 const tone = (s: string) =>
   s === "confirmed" ? "secondary" : s === "completed" ? "outline" : s === "cancelled" ? "destructive" : "default";
+
+const ageOf = (dob: string | null | undefined) => {
+  if (!dob) return null;
+  const d = new Date(dob);
+  if (Number.isNaN(d.getTime())) return null;
+  return Math.floor((Date.now() - d.getTime()) / 31557600000);
+};
 
 export function AppointmentQueue({
   title, description, doctorId, patientUserId, statuses, todayOnly, actions = [], patientLabels,
@@ -48,6 +60,7 @@ export function AppointmentQueue({
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
   const [reschedule, setReschedule] = useState<Appointment | null>(null);
+  const [detail, setDetail] = useState<Appointment | null>(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
 
@@ -55,7 +68,10 @@ export function AppointmentQueue({
 
   const load = useCallback(async () => {
     setLoading(true);
-    let q = supabase.from("appointments").select("*").order("appointment_date", { ascending: false });
+    let q = supabase
+      .from("appointments")
+      .select("*, patients:patient_record_id (full_name, email, mobile, gender, date_of_birth, uhid)")
+      .order("appointment_date", { ascending: false });
     if (doctorId) q = q.eq("doctor_id", doctorId);
     if (patientUserId) q = q.eq("patient_id", patientUserId);
     if (todayOnly) q = q.eq("appointment_date", today);
@@ -93,6 +109,15 @@ export function AppointmentQueue({
     void load();
   };
 
+  const remove = async (row: Appointment) => {
+    setBusy(row.id);
+    const { error } = await supabase.from("appointments").delete().eq("id", row.id);
+    setBusy(null);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Appointment deleted.");
+    setRows((prev) => prev.filter((r) => r.id !== row.id));
+  };
+
   return (
     <Card className="rounded-3xl border-border/60 p-6 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -117,15 +142,18 @@ export function AppointmentQueue({
             <div key={a.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
               <div className="min-w-56">
                 <div className="text-sm font-semibold">
-                  {patientLabels?.[a.patient_record_id ?? ""] ?? a.doctor_name}
+                  {a.patients?.full_name ?? patientLabels?.[a.patient_record_id ?? ""] ?? a.doctor_name}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {patientLabels ? `${a.doctor_name} · ` : ""}{a.department} · {formatDate(a.appointment_date)} at {a.appointment_time}
+                  {patientLabels || a.patients ? `${a.doctor_name} · ` : ""}{a.department} · {formatDate(a.appointment_date)} at {a.appointment_time}
                 </div>
                 {a.reason && <div className="mt-1 max-w-md text-xs text-muted-foreground/80">{a.reason}</div>}
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant={tone(a.status) as "default" | "secondary" | "outline" | "destructive"}>{a.status}</Badge>
+                <Button size="sm" variant="outline" className="rounded-full" onClick={() => setDetail(a)}>
+                  <Eye className="mr-1 h-3 w-3" /> View
+                </Button>
                 {actions.includes("approve") && a.status === "pending" && (
                   <Button size="sm" className="rounded-full" disabled={busy === a.id} onClick={() => void setStatus(a, "confirmed")}>
                     <Check className="mr-1 h-3 w-3" /> Approve
@@ -152,11 +180,50 @@ export function AppointmentQueue({
                     Cancel
                   </Button>
                 )}
+                {actions.includes("delete") && (
+                  <Button size="sm" variant="ghost" className="rounded-full text-destructive" disabled={busy === a.id} onClick={() => void remove(a)}>
+                    <Trash2 className="mr-1 h-3 w-3" /> Delete
+                  </Button>
+                )}
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Appointment details</DialogTitle></DialogHeader>
+          {detail && (
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+              {[
+                ["Patient", detail.patients?.full_name ?? patientLabels?.[detail.patient_record_id ?? ""] ?? "—"],
+                ["UHID", detail.patients?.uhid ?? "—"],
+                ["Age", ageOf(detail.patients?.date_of_birth) != null ? `${ageOf(detail.patients?.date_of_birth)} yrs` : "—"],
+                ["Gender", detail.patients?.gender ?? "—"],
+                ["Phone", detail.patients?.mobile ?? "—"],
+                ["Email", detail.patients?.email ?? "—"],
+                ["Doctor", detail.doctor_name],
+                ["Department", detail.department],
+                ["Date", formatDate(detail.appointment_date)],
+                ["Time", detail.appointment_time],
+                ["Status", detail.status],
+                ["Booked on", detail.created_at ? formatDate(detail.created_at.slice(0, 10)) : "—"],
+              ].map(([k, v]) => (
+                <div key={k as string}>
+                  <dt className="text-xs uppercase tracking-widest text-muted-foreground">{k}</dt>
+                  <dd className="mt-1 break-words font-medium">{v as string}</dd>
+                </div>
+              ))}
+              <div className="col-span-2">
+                <dt className="text-xs uppercase tracking-widest text-muted-foreground">Reason for visit</dt>
+                <dd className="mt-1">{detail.reason ?? "—"}</dd>
+              </div>
+            </dl>
+          )}
+          <DialogFooter><Button variant="ghost" onClick={() => setDetail(null)}>Close</Button></DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!reschedule} onOpenChange={(o) => !o && setReschedule(null)}>
         <DialogContent className="sm:max-w-sm">
