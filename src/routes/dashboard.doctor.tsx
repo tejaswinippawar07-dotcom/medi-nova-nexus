@@ -39,7 +39,7 @@ function DoctorDash() {
   const doctorsLookup = useLookup("doctors", "name");
   const [doctor, setDoctor] = useState<DoctorRow | null>(null);
   const [ready, setReady] = useState(false);
-  const [stats, setStats] = useState<{ today: number; pending: number; completed: number; patients: number }>({ today: 0, pending: 0, completed: 0, patients: 0 });
+  const [stats, setStats] = useState({ today: 0, upcoming: 0, total: 0, pending: 0, confirmed: 0, completed: 0, patients: 0 });
 
   useEffect(() => {
     if (!user) return;
@@ -56,7 +56,10 @@ function DoctorDash() {
       const rows = data ?? [];
       setStats({
         today: rows.filter((r) => r.appointment_date === iso).length,
+        upcoming: rows.filter((r) => r.appointment_date > iso && r.status !== "cancelled").length,
+        total: rows.length,
         pending: rows.filter((r) => r.status === "pending").length,
+        confirmed: rows.filter((r) => r.status === "confirmed").length,
         completed: rows.filter((r) => r.status === "completed").length,
         patients: new Set(rows.map((r) => r.patient_record_id).filter(Boolean)).size,
       });
@@ -91,7 +94,10 @@ function DoctorDash() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { label: "Today's consults", value: stats.today, icon: <CalendarCheck className="h-4 w-4" /> },
+              { label: "Upcoming", value: stats.upcoming, icon: <CalendarCheck className="h-4 w-4" /> },
+              { label: "Total appointments", value: stats.total, icon: <Activity className="h-4 w-4" /> },
               { label: "Awaiting approval", value: stats.pending, icon: <Activity className="h-4 w-4" /> },
+              { label: "Confirmed", value: stats.confirmed, icon: <CalendarCheck className="h-4 w-4" /> },
               { label: "Completed visits", value: stats.completed, icon: <FileText className="h-4 w-4" /> },
               { label: "Patients seen", value: stats.patients, icon: <Users className="h-4 w-4" /> },
             ].map((s) => (
@@ -106,6 +112,7 @@ function DoctorDash() {
             <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
               <TabsTrigger value="today">Today</TabsTrigger>
               <TabsTrigger value="schedule">Full schedule</TabsTrigger>
+              <TabsTrigger value="patients">My patients</TabsTrigger>
               <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
               <TabsTrigger value="reports">Reports</TabsTrigger>
               <TabsTrigger value="profile">My profile</TabsTrigger>
@@ -124,6 +131,11 @@ function DoctorDash() {
               <AppointmentQueue title="My schedule" description="Every appointment assigned to you, newest first."
                 doctorId={doctor.id} actions={["approve", "reject", "complete", "reschedule"]}
                 patientLabels={Object.fromEntries(patients.map((p) => [p.value, p.label]))} />
+            </TabsContent>
+
+            <TabsContent value="patients" className="mt-6">
+              <AppointmentQueue title="My patients" description="Patients with appointments assigned to you — open View for full details."
+                doctorId={doctor.id} patientLabels={Object.fromEntries(patients.map((p) => [p.value, p.label]))} />
             </TabsContent>
 
             <TabsContent value="prescriptions" className="mt-6">

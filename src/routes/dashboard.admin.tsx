@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { labelFor, useLookup } from "@/lib/hospital/lookups";
 import { AppointmentQueue } from "@/components/hms/AppointmentQueue";
+import { UserRoles } from "@/components/hms/UserRoles";
 import {
   admissionFields, ambulanceFields, appointmentFields, auditFields, billingFields,
   contactFields, departmentFields, doctorFields, inr, medicineFields, patientFields, reportFields, staffFields,
@@ -27,7 +28,8 @@ export const Route = createFileRoute("/dashboard/admin")({
 const TABS = [
   ["overview", "Overview"], ["patients", "Patients"], ["doctors", "Doctors"], ["departments", "Departments"],
   ["staff", "Staff"], ["appointments", "Appointments"], ["admissions", "Admissions"], ["prescriptions", "Prescriptions"],
-  ["pharmacy", "Pharmacy"], ["billing", "Billing"], ["reports", "Reports"], ["ambulance", "Ambulance"], ["enquiries", "Enquiries"], ["audit", "Audit log"],
+  ["pharmacy", "Pharmacy"], ["billing", "Billing"], ["reports", "Reports"], ["ambulance", "Ambulance"], ["enquiries", "Enquiries"],
+  ["users", "Users"], ["audit", "Audit log"],
 ] as const;
 
 function useCounts() {
@@ -152,8 +154,11 @@ function AdminDash() {
             fields={staffFields(departments)} searchKeys={["name", "designation", "phone"]} />
         </TabsContent>
 
-        <TabsContent value="appointments" className="mt-6">
-          <CrudManager table="appointments" title="Appointments" fields={appointmentFields(doctors, departments, patients)}
+        <TabsContent value="appointments" className="mt-6 space-y-6">
+          <AppointmentQueue title="All appointments" description="Every booking across the hospital — view patient details, confirm, cancel or delete."
+            actions={["approve", "reject", "complete", "reschedule", "delete"]}
+            patientLabels={Object.fromEntries(patients.map((p) => [p.value, p.label]))} />
+          <CrudManager table="appointments" title="Appointment records" fields={appointmentFields(doctors, departments, patients)}
             searchKeys={["doctor_name", "department", "status"]} />
         </TabsContent>
 
@@ -194,6 +199,10 @@ function AdminDash() {
         <TabsContent value="enquiries" className="mt-6">
           <CrudManager table="contacts" title="Website enquiries" description="Messages submitted from the public contact form."
             canCreate={false} fields={contactFields} searchKeys={["name", "email", "subject"]} />
+        </TabsContent>
+
+        <TabsContent value="users" className="mt-6">
+          <UserRoles />
         </TabsContent>
 
         <TabsContent value="audit" className="mt-6">

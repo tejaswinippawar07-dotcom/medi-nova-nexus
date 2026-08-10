@@ -755,6 +755,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_appointment_doctor: {
+        Args: { _appointment_doctor_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       notify_users: {
         Args: {
