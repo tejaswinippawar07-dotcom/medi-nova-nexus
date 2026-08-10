@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.is_appointment_doctor(uuid, uuid) FROM anon;
