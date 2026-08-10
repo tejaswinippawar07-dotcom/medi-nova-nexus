@@ -13,18 +13,34 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
   nav: { to: string; label: string; icon: ReactNode }[];
   children: ReactNode;
 }) {
-  const { user, role, loading, signOut } = useAuth();
+  const { user, role, loading, roleLoading, signOut } = useAuth();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (loading) return;
-    if (!user) navigate({ to: "/auth" });
-    else if (role && !allowedRoles.includes(role)) navigate({ to: roleHome[role] });
-  }, [loading, user, role, allowedRoles, navigate]);
+    if (!user) { navigate({ to: "/auth" }); return; }
+    if (roleLoading) return;
+    if (role && !allowedRoles.includes(role)) navigate({ to: roleHome[role] });
+  }, [loading, roleLoading, user, role, allowedRoles, navigate]);
 
-  if (loading || !user) {
+  if (loading || !user || roleLoading) {
     return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
+  }
+
+  if (!role) {
+    return (
+      <div className="grid min-h-screen place-items-center p-6 text-center text-sm text-muted-foreground">
+        <div>
+          <p>We couldn't load your role for this account.</p>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!allowedRoles.includes(role)) {
+    return <div className="grid min-h-screen place-items-center text-muted-foreground">Redirecting…</div>;
   }
 
   return (
