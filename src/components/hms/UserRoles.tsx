@@ -5,12 +5,14 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Role } from "@/lib/hospital/auth";
+import { useAuth } from "@/lib/hospital/auth";
 
 type Row = { id: string; full_name: string | null; phone: string | null; created_at: string; role: Role | null };
 
 const ROLES: Role[] = ["admin", "doctor", "receptionist", "patient"];
 
 export function UserRoles() {
+  const { user } = useAuth();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState<string | null>(null);
@@ -30,12 +32,19 @@ export function UserRoles() {
   useEffect(() => { void load(); }, [load]);
 
   const setRole = async (row: Row, role: Role) => {
+    if (row.role === role) return;
+    if (row.id === user?.id && role !== "admin") {
+      toast.error("You can't remove your own admin access — ask another admin to do it.");
+      return;
+    }
     setBusy(row.id);
-    const del = await supabase.from("user_roles").delete().eq("user_id", row.id);
-    if (del.error) { setBusy(null); toast.error(del.error.message); return; }
+    // Insert first, then remove the old roles: deleting first can strip the acting
+    // admin's own privileges mid-change and make the follow-up insert fail.
     const ins = await supabase.from("user_roles").insert({ user_id: row.id, role });
+    if (ins.error) { setBusy(null); toast.error(ins.error.message); return; }
+    const del = await supabase.from("user_roles").delete().eq("user_id", row.id).neq("role", role);
     setBusy(null);
-    if (ins.error) { toast.error(ins.error.message); return; }
+    if (del.error) { toast.error(del.error.message); return; }
     toast.success(`Role updated to ${role}.`);
     setRows((prev) => prev.map((r) => (r.id === row.id ? { ...r, role } : r)));
   };
