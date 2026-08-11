@@ -13,7 +13,7 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
   nav: { to: string; label: string; icon: ReactNode }[];
   children: ReactNode;
 }) {
-  const { user, role, loading, roleLoading, signOut } = useAuth();
+  const { user, role, loading, roleLoading, refreshRole, signOut } = useAuth();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
 
@@ -31,9 +31,16 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
   if (!role) {
     return (
       <div className="grid min-h-screen place-items-center p-6 text-center text-sm text-muted-foreground">
-        <div>
-          <p>We couldn't load your role for this account.</p>
-          <Button variant="outline" size="sm" className="mt-4" onClick={() => window.location.reload()}>Retry</Button>
+        <div className="max-w-sm">
+          <p className="font-medium text-foreground">No role is assigned to this account</p>
+          <p className="mt-2">
+            You're signed in as {user.email}, but no access level has been granted yet. Ask an administrator to
+            assign your role in Admin console → Users, then retry.
+          </p>
+          <div className="mt-4 flex justify-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => void refreshRole()}>Retry</Button>
+            <Button variant="ghost" size="sm" onClick={async () => { await signOut(); navigate({ to: "/auth" }); }}>Sign out</Button>
+          </div>
         </div>
       </div>
     );
