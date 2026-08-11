@@ -17,23 +17,26 @@ type Ctx = {
   role: Role | null;
   loading: boolean;
   roleLoading: boolean;
+  refreshRole: () => Promise<void>;
   signOut: () => Promise<void>;
 };
-const AuthCtx = createContext<Ctx>({ user: null, session: null, role: null, loading: true, roleLoading: true, signOut: async () => {} });
+const AuthCtx = createContext<Ctx>({ user: null, session: null, role: null, loading: true, roleLoading: true, refreshRole: async () => {}, signOut: async () => {} });
+
+/** Highest-privilege role wins when an account holds more than one row. */
+const ROLE_PRIORITY: Role[] = ["admin", "doctor", "receptionist", "patient"];
 
 /** Reads the signed-in user's role from user_roles. Returns null when it cannot be determined. */
 export async function fetchRole(userId: string): Promise<Role | null> {
   const { data, error } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
-    .limit(1)
-    .maybeSingle();
+    .eq("user_id", userId);
   if (error) {
     console.error("Failed to load role", error);
     return null;
   }
-  return (data?.role as Role | undefined) ?? null;
+  const roles = (data ?? []).map((r) => r.role as Role);
+  return ROLE_PRIORITY.find((r) => roles.includes(r)) ?? null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -67,10 +70,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  const refreshRole = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return;
+    setRoleLoading(true);
+    setRole(await fetchRole(data.user.id));
+    setRoleLoading(false);
+  };
+
   const signOut = async () => { await supabase.auth.signOut(); };
 
   return (
-    <AuthCtx.Provider value={{ user: session?.user ?? null, session, role, loading, roleLoading, signOut }}>
+    <AuthCtx.Provider value={{ user: session?.user ?? null, session, role, loading, roleLoading, refreshRole, signOut }}>
       {children}
     </AuthCtx.Provider>
   );
