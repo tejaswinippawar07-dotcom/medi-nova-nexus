@@ -163,16 +163,16 @@ export function CrudManager({
   };
 
   return (
-    <Card className="rounded-3xl border-border/60 p-6 shadow-card">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <Card className="rounded-3xl border-border/60 p-4 shadow-card sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <div>
           <h2 className="text-lg font-semibold">{title}</h2>
           {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <div className="relative min-w-0 flex-1 sm:flex-none">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="w-48 pl-9" />
+            <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="w-full pl-9 sm:w-48" />
           </div>
           <Button variant="ghost" size="icon" aria-label="Refresh" onClick={() => void load()}>
             <RefreshCw className="h-4 w-4" />
@@ -195,8 +195,8 @@ export function CrudManager({
         </div>
       </div>
 
-      <div className="mt-6 overflow-x-auto">
-        <Table>
+      <div className="-mx-4 mt-6 overflow-x-auto sm:mx-0">
+        <Table className="min-w-[640px]">
           <TableHeader>
             <TableRow>
               {tableFields.map((f) => <TableHead key={f.key}>{f.label}</TableHead>)}
@@ -240,7 +240,7 @@ export function CrudManager({
       <div className="mt-4 text-xs text-muted-foreground">{filtered.length} record{filtered.length === 1 ? "" : "s"}</div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="max-h-[85vh] w-[calc(100vw-2rem)] overflow-y-auto sm:max-w-lg">
           <DialogHeader><DialogTitle>{editing ? `Edit ${title.toLowerCase()}` : `New ${title.toLowerCase()}`}</DialogTitle></DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
             {editableFields.map((f) => (

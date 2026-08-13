@@ -119,7 +119,7 @@ export function AppointmentQueue({
   };
 
   return (
-    <Card className="rounded-3xl border-border/60 p-6 shadow-card">
+    <Card className="rounded-3xl border-border/60 p-4 shadow-card sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">{title}</h2>
@@ -139,8 +139,8 @@ export function AppointmentQueue({
       ) : (
         <div className="mt-4 divide-y divide-border/60">
           {visible.map((a) => (
-            <div key={a.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
-              <div className="min-w-56">
+            <div key={a.id} className="flex flex-wrap items-center justify-between gap-3 py-4 sm:gap-4">
+              <div className="min-w-0 flex-1 sm:min-w-56">
                 <div className="text-sm font-semibold">
                   {a.patients?.full_name ?? patientLabels?.[a.patient_record_id ?? ""] ?? a.doctor_name}
                 </div>
@@ -192,10 +192,10 @@ export function AppointmentQueue({
       )}
 
       <Dialog open={!!detail} onOpenChange={(o) => !o && setDetail(null)}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-[calc(100vw-2rem)] max-h-[85vh] overflow-y-auto sm:max-w-md">
           <DialogHeader><DialogTitle>Appointment details</DialogTitle></DialogHeader>
           {detail && (
-            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+            <dl className="grid grid-cols-1 gap-x-4 gap-y-3 text-sm sm:grid-cols-2">
               {[
                 ["Patient", detail.patients?.full_name ?? patientLabels?.[detail.patient_record_id ?? ""] ?? "—"],
                 ["UHID", detail.patients?.uhid ?? "—"],
