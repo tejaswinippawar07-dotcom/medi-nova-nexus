@@ -70,7 +70,7 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
           <LogOut className="h-4 w-4" /> Sign out
         </Button>
       </aside>
-      <div className="flex flex-col">
+      <div className="flex min-w-0 flex-col">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-2 border-b border-border/60 bg-background/85 px-4 backdrop-blur sm:px-6">
           <div className="flex min-w-0 items-center gap-2">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
@@ -109,7 +109,7 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
             </button>
           </div>
         </header>
-        <main className="flex-1 p-4 sm:p-6 lg:p-10">{children}</main>
+        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-10">{children}</main>
       </div>
     </div>
   );
