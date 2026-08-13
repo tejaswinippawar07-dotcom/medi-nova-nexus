@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Moon, Stethoscope, Sun } from "lucide-react";
+import { LogOut, Menu, Moon, Stethoscope, Sun } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { roleHome, useAuth, type Role } from "@/lib/hospital/auth";
 import { useTheme } from "@/lib/hospital/theme";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/hms/NotificationBell";
 
 export function DashboardLayout({ title, nav, children, allowedRoles }: {
@@ -16,6 +17,7 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
   const { user, role, loading, roleLoading, refreshRole, signOut } = useAuth();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (loading) return;
@@ -69,16 +71,45 @@ export function DashboardLayout({ title, nav, children, allowedRoles }: {
         </Button>
       </aside>
       <div className="flex flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-border/60 bg-background/75 px-6 backdrop-blur">
-          <div className="text-sm text-muted-foreground">Signed in as <span className="font-medium text-foreground">{user.email}</span></div>
-          <div className="flex items-center gap-1">
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-2 border-b border-border/60 bg-background/85 px-4 backdrop-blur sm:px-6">
+          <div className="flex min-w-0 items-center gap-2">
+            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[280px] bg-sidebar p-6">
+                <SheetTitle className="sr-only">{title} menu</SheetTitle>
+                <Link to="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-hero text-primary-foreground shadow-elegant"><Stethoscope className="h-5 w-5" /></span>
+                  <div className="leading-tight"><div className="text-sm font-semibold text-sidebar-foreground">LifeCare</div><div className="text-[10px] uppercase tracking-widest text-muted-foreground">{title}</div></div>
+                </Link>
+                <nav className="mt-8 space-y-1">
+                  {nav.map((n) => (
+                    <Link key={n.to} to={n.to} onClick={() => setMenuOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&.active]:bg-sidebar-accent [&.active]:text-sidebar-accent-foreground">
+                      {n.icon}{n.label}
+                    </Link>
+                  ))}
+                </nav>
+                <Button variant="ghost" size="sm" className="mt-6 w-full justify-start gap-2 text-muted-foreground" onClick={async () => { setMenuOpen(false); await signOut(); navigate({ to: "/" }); }}>
+                  <LogOut className="h-4 w-4" /> Sign out
+                </Button>
+              </SheetContent>
+            </Sheet>
+            <div className="min-w-0 truncate text-sm text-muted-foreground">
+              <span className="hidden sm:inline">Signed in as </span>
+              <span className="font-medium text-foreground">{user.email}</span>
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-1">
             <NotificationBell />
             <button onClick={toggle} aria-label="Toggle theme" className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:bg-accent">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
           </div>
         </header>
-        <main className="flex-1 p-6 lg:p-10">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 lg:p-10">{children}</main>
       </div>
     </div>
   );
