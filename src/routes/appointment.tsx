@@ -125,7 +125,7 @@ function BookAppointment() {
             </div>
             <div>
               <Label>Doctor</Label>
-              <Select value={doctor} onValueChange={setDoctor}>
+              <Select value={doctor} onValueChange={(v) => { setDoctor(v); setSlot(""); }}>
                 <SelectTrigger className="mt-2"><SelectValue placeholder={dept ? "Select doctor" : "Choose a department first"} /></SelectTrigger>
                 <SelectContent>{doctors.map((d) => <SelectItem key={d.id} value={d.id}>{d.name} · ₹{d.fee}</SelectItem>)}</SelectContent>
               </Select>
