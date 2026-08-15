@@ -55,9 +55,19 @@ function BookAppointment() {
 
   const doctors = useMemo(() => DOCTORS.filter((d) => !dept || d.departmentSlug === dept), [dept]);
   const selectedDoc = DOCTORS.find((d) => d.id === doctor);
-  const availableSlots = selectedDoc && date
-    ? selectedDoc.schedule.find((s) => s.day === format(date, "EEE"))?.slots ?? []
-    : [];
+  const availableSlots = useMemo(() => {
+    if (!selectedDoc || !date) return [] as string[];
+    const dayKey = format(date, "EEE");
+    return selectedDoc.schedule.find((s) => s.day === dayKey)?.slots ?? [];
+  }, [selectedDoc, date]);
+  const isClosedDay = Boolean(selectedDoc && date && availableSlots.length === 0);
+  const slotPlaceholder = !selectedDoc
+    ? "Select a doctor first"
+    : !date
+      ? "Pick a date first"
+      : isClosedDay
+        ? "No slots this day"
+        : "Select time";
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,16 +140,34 @@ function BookAppointment() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={date} onSelect={(d) => { setDate(d); setSlot(""); }} initialFocus disabled={{ before: new Date() }} className="p-3 pointer-events-auto" />
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(d) => { setDate(d); setSlot(""); }}
+                    initialFocus
+                    disabled={(d) => {
+                      const today = new Date(); today.setHours(0, 0, 0, 0);
+                      if (d < today) return true;
+                      if (!selectedDoc) return false;
+                      const day = selectedDoc.schedule.find((s) => s.day === format(d, "EEE"));
+                      return !day || day.slots.length === 0;
+                    }}
+                    className="p-3 pointer-events-auto"
+                  />
                 </PopoverContent>
               </Popover>
             </div>
             <div>
               <Label>Time slot</Label>
-              <Select value={slot} onValueChange={setSlot}>
-                <SelectTrigger className="mt-2"><SelectValue placeholder={date && selectedDoc ? "Select time" : "Select doctor & date first"} /></SelectTrigger>
-                <SelectContent>{availableSlots.map((s: string) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+              <Select value={slot} onValueChange={setSlot} disabled={availableSlots.length === 0}>
+                <SelectTrigger className="mt-2"><SelectValue placeholder={slotPlaceholder} /></SelectTrigger>
+                <SelectContent className="max-h-64">
+                  {availableSlots.map((s: string) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
               </Select>
+              {isClosedDay && (
+                <p className="mt-2 text-xs text-muted-foreground">{selectedDoc?.name} isn't consulting on {format(date!, "EEEE")}. Please pick another date.</p>
+              )}
             </div>
             <div>
               <Label>Full name</Label>
