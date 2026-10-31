@@ -266,6 +266,83 @@ export type Database = {
           },
         ]
       }
+      clinical_notes: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          created_by: string | null
+          diagnosis: string
+          doctor_id: string | null
+          doctor_notes: string | null
+          follow_up_date: string | null
+          follow_up_notes: string | null
+          id: string
+          patient_id: string
+          treatment_plan: string | null
+          updated_at: string
+          visit_date: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis: string
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          follow_up_date?: string | null
+          follow_up_notes?: string | null
+          id?: string
+          patient_id: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis?: string
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          follow_up_date?: string | null
+          follow_up_notes?: string | null
+          id?: string
+          patient_id?: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string
@@ -465,6 +542,57 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      patient_history: {
+        Row: {
+          category: string
+          created_at: string
+          details: string | null
+          id: string
+          patient_id: string
+          recorded_by: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          patient_id: string
+          recorded_by?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          patient_id?: string
+          recorded_by?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_history_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_history_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       patients: {
         Row: {
@@ -742,6 +870,76 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vitals: {
+        Row: {
+          appointment_id: string | null
+          blood_pressure: string | null
+          created_at: string
+          height_cm: number | null
+          id: string
+          notes: string | null
+          patient_id: string
+          pulse: number | null
+          recorded_at: string
+          recorded_by: string | null
+          spo2: number | null
+          temperature_c: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          blood_pressure?: string | null
+          created_at?: string
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          pulse?: number | null
+          recorded_at?: string
+          recorded_by?: string | null
+          spo2?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          appointment_id?: string | null
+          blood_pressure?: string | null
+          created_at?: string
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          pulse?: number | null
+          recorded_at?: string
+          recorded_by?: string | null
+          spo2?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vitals_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vitals_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vitals_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
