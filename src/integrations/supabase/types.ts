@@ -479,33 +479,45 @@ export type Database = {
       }
       medicines: {
         Row: {
+          batch_number: string | null
+          category: string | null
           created_at: string
           expiry_date: string | null
           id: string
+          low_stock_threshold: number
           manufacturer: string | null
           medicine_name: string
           price: number
           quantity: number
+          unit: string | null
           updated_at: string
         }
         Insert: {
+          batch_number?: string | null
+          category?: string | null
           created_at?: string
           expiry_date?: string | null
           id?: string
+          low_stock_threshold?: number
           manufacturer?: string | null
           medicine_name: string
           price?: number
           quantity?: number
+          unit?: string | null
           updated_at?: string
         }
         Update: {
+          batch_number?: string | null
+          category?: string | null
           created_at?: string
           expiry_date?: string | null
           id?: string
+          low_stock_threshold?: number
           manufacturer?: string | null
           medicine_name?: string
           price?: number
           quantity?: number
+          unit?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -846,6 +858,61 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          change: number
+          created_at: string
+          id: string
+          medicine_id: string
+          note: string | null
+          performed_by: string | null
+          prescription_id: string | null
+          reason: string
+        }
+        Insert: {
+          change: number
+          created_at?: string
+          id?: string
+          medicine_id: string
+          note?: string | null
+          performed_by?: string | null
+          prescription_id?: string | null
+          reason?: string
+        }
+        Update: {
+          change?: number
+          created_at?: string
+          id?: string
+          medicine_id?: string
+          note?: string | null
+          performed_by?: string | null
+          prescription_id?: string | null
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
             referencedColumns: ["id"]
           },
         ]
