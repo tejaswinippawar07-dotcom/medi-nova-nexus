@@ -86,10 +86,56 @@ export const admissionFields = (patients: Option[]): Field[] => [
 
 export const medicineFields: Field[] = [
   { key: "medicine_name", label: "Medicine", required: true },
-  { key: "manufacturer", label: "Manufacturer" },
+  { key: "category", label: "Category", placeholder: "Antibiotic / Analgesic" },
+  { key: "batch_number", label: "Batch no.", hideInTable: true, placeholder: "BAT-2401" },
+  { key: "unit", label: "Unit", hideInTable: true, placeholder: "strip" },
   { key: "quantity", label: "In stock", type: "number" },
+  { key: "low_stock_threshold", label: "Alert below", type: "number", hideInTable: true },
+  { key: "manufacturer", label: "Manufacturer" },
   { key: "price", label: "Unit price", type: "number", render: (r) => inr(r["price"]) },
   { key: "expiry_date", label: "Expiry", type: "date", render: (r) => formatDate(r["expiry_date"]) },
+];
+
+/** The stock ledger is append-only: entries are created, never edited or deleted. */
+export const stockMovementFields = (medicines: Option[]): Field[] => [
+  { key: "medicine_id", label: "Medicine", type: "select", options: medicines, required: true, render: (r) => labelFor(medicines, r["medicine_id"]) },
+  { key: "change", label: "Quantity (+ in / − out)", type: "number", required: true },
+  { key: "reason", label: "Reason", type: "select", options: opts("purchase", "dispense", "adjustment", "expiry") },
+  { key: "created_at", label: "When", readOnly: true, render: (r) => formatDate(r["created_at"]) },
+  { key: "note", label: "Note", type: "textarea", hideInTable: true },
+];
+
+export const clinicalNoteFields = (patients: Option[], doctors: Option[], appointments: Option[]): Field[] => [
+  { key: "patient_id", label: "Patient", type: "select", options: patients, required: true, render: (r) => labelFor(patients, r["patient_id"]) },
+  { key: "doctor_id", label: "Doctor", type: "select", options: doctors, required: true, render: (r) => labelFor(doctors, r["doctor_id"]) },
+  { key: "appointment_id", label: "Linked appointment", type: "select", options: appointments, hideInTable: true },
+  { key: "visit_date", label: "Visit date", type: "date", render: (r) => formatDate(r["visit_date"]) },
+  { key: "diagnosis", label: "Diagnosis", required: true },
+  { key: "treatment_plan", label: "Treatment plan", type: "textarea", hideInTable: true },
+  { key: "doctor_notes", label: "Doctor notes", type: "textarea", hideInTable: true },
+  { key: "follow_up_date", label: "Follow-up date", type: "date", hideInTable: true, render: (r) => formatDate(r["follow_up_date"]) },
+  { key: "follow_up_notes", label: "Follow-up notes", type: "textarea", hideInTable: true },
+];
+
+export const vitalsFields = (patients: Option[]): Field[] => [
+  { key: "patient_id", label: "Patient", type: "select", options: patients, required: true, render: (r) => labelFor(patients, r["patient_id"]) },
+  { key: "blood_pressure", label: "Blood pressure", placeholder: "120/80" },
+  { key: "pulse", label: "Pulse", type: "number" },
+  { key: "temperature_c", label: "Temp (°C)", type: "number" },
+  { key: "spo2", label: "SpO₂ (%)", type: "number", hideInTable: true },
+  { key: "weight_kg", label: "Weight (kg)", type: "number" },
+  { key: "height_cm", label: "Height (cm)", type: "number", hideInTable: true },
+  { key: "notes", label: "Notes", type: "textarea", hideInTable: true },
+  { key: "recorded_at", label: "Recorded", readOnly: true, render: (r) => formatDate(r["recorded_at"]) },
+];
+
+export const historyFields = (patients: Option[]): Field[] => [
+  { key: "patient_id", label: "Patient", type: "select", options: patients, required: true, render: (r) => labelFor(patients, r["patient_id"]) },
+  { key: "category", label: "Category", type: "select", options: opts("allergy", "chronic", "surgery", "family", "medication", "immunisation"), required: true },
+  { key: "title", label: "Title", required: true, placeholder: "Penicillin allergy" },
+  { key: "details", label: "Details", type: "textarea", hideInTable: true },
+  { key: "status", label: "Status", type: "select", options: opts("active", "resolved"), render: (r) => <StatusCell value={r["status"]} /> },
+  { key: "created_at", label: "Recorded", readOnly: true, render: (r) => formatDate(r["created_at"]) },
 ];
 
 export const billingFields = (patients: Option[]): Field[] => [
@@ -146,3 +192,6 @@ export const prescriptionFields = (patients: Option[], doctors: Option[]): Field
   { key: "notes", label: "Advice", type: "textarea" },
   { key: "created_at", label: "Issued", readOnly: true, render: (r) => formatDate(r["created_at"]) },
 ];
+
+export const historyCategoryLabel = (c: unknown) =>
+  String(c ?? "").charAt(0).toUpperCase() + String(c ?? "").slice(1);
