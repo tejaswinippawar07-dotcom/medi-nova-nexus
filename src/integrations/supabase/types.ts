@@ -266,6 +266,83 @@ export type Database = {
           },
         ]
       }
+      clinical_notes: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          created_by: string | null
+          diagnosis: string
+          doctor_id: string | null
+          doctor_notes: string | null
+          follow_up_date: string | null
+          follow_up_notes: string | null
+          id: string
+          patient_id: string
+          treatment_plan: string | null
+          updated_at: string
+          visit_date: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis: string
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          follow_up_date?: string | null
+          follow_up_notes?: string | null
+          id?: string
+          patient_id: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis?: string
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          follow_up_date?: string | null
+          follow_up_notes?: string | null
+          id?: string
+          patient_id?: string
+          treatment_plan?: string | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string
@@ -402,33 +479,45 @@ export type Database = {
       }
       medicines: {
         Row: {
+          batch_number: string | null
+          category: string | null
           created_at: string
           expiry_date: string | null
           id: string
+          low_stock_threshold: number
           manufacturer: string | null
           medicine_name: string
           price: number
           quantity: number
+          unit: string | null
           updated_at: string
         }
         Insert: {
+          batch_number?: string | null
+          category?: string | null
           created_at?: string
           expiry_date?: string | null
           id?: string
+          low_stock_threshold?: number
           manufacturer?: string | null
           medicine_name: string
           price?: number
           quantity?: number
+          unit?: string | null
           updated_at?: string
         }
         Update: {
+          batch_number?: string | null
+          category?: string | null
           created_at?: string
           expiry_date?: string | null
           id?: string
+          low_stock_threshold?: number
           manufacturer?: string | null
           medicine_name?: string
           price?: number
           quantity?: number
+          unit?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -465,6 +554,57 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      patient_history: {
+        Row: {
+          category: string
+          created_at: string
+          details: string | null
+          id: string
+          patient_id: string
+          recorded_by: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          patient_id: string
+          recorded_by?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          patient_id?: string
+          recorded_by?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_history_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_history_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       patients: {
         Row: {
@@ -722,6 +862,61 @@ export type Database = {
           },
         ]
       }
+      stock_movements: {
+        Row: {
+          change: number
+          created_at: string
+          id: string
+          medicine_id: string
+          note: string | null
+          performed_by: string | null
+          prescription_id: string | null
+          reason: string
+        }
+        Insert: {
+          change: number
+          created_at?: string
+          id?: string
+          medicine_id: string
+          note?: string | null
+          performed_by?: string | null
+          prescription_id?: string | null
+          reason?: string
+        }
+        Update: {
+          change?: number
+          created_at?: string
+          id?: string
+          medicine_id?: string
+          note?: string | null
+          performed_by?: string | null
+          prescription_id?: string | null
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -742,6 +937,76 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vitals: {
+        Row: {
+          appointment_id: string | null
+          blood_pressure: string | null
+          created_at: string
+          height_cm: number | null
+          id: string
+          notes: string | null
+          patient_id: string
+          pulse: number | null
+          recorded_at: string
+          recorded_by: string | null
+          spo2: number | null
+          temperature_c: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          blood_pressure?: string | null
+          created_at?: string
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          pulse?: number | null
+          recorded_at?: string
+          recorded_by?: string | null
+          spo2?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          appointment_id?: string | null
+          blood_pressure?: string | null
+          created_at?: string
+          height_cm?: number | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          pulse?: number | null
+          recorded_at?: string
+          recorded_by?: string | null
+          spo2?: number | null
+          temperature_c?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vitals_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vitals_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vitals_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -793,12 +1058,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -822,11 +1087,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -847,11 +1112,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -872,11 +1137,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -889,11 +1154,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
